@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gamepad Test</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #buttonStatus {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      #bulletColorStatus {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #f00;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="index.js" type="module"></script>
+  </head>
+  <body>
+    <div id="buttonStatus">
+      <h3>Button Status</h3>
+      <p>단발: <span id="xButtonStatus">○</span></p>
+      <p>연발: <span id="r2ButtonStatus">0%</span></p>
+      <p>진동: <span id="vibrationButtonStatus">Off</span></p>
+      <p>소리: <span id="soundButtonStatus">Off</span></p>
+      <p>Bullet 색상: <span id="bulletColorStatus"></span></p>
+    </div>
+  </body>
+</html>
