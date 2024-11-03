@@ -12,8 +12,18 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+const rgbeLoader = new THREE.RGBELoader();
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.3;
+renderer.outputEncoding = THREE.sRGBEncoding;
+rgbeLoader.load('./images/rocky_mountain_sky_dome_8k.hdr', function (texture) {
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = texture;
+  scene.environment = texture;
+});
+
 // 조명 추가
-const ambientLight = new THREE.AmbientLight(0x404040, 2);
+const ambientLight = new THREE.AmbientLight(0x404040, 5);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -21,11 +31,11 @@ directionalLight.position.set(10, 20, 10);
 scene.add(directionalLight);
 
 // 바닥 추가
-const floorGeometry = new THREE.PlaneGeometry(50, 50);
-const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x87ceeb });
-const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-floor.rotation.x = -Math.PI / 2;
-scene.add(floor);
+// const floorGeometry = new THREE.PlaneGeometry(50, 50);
+// const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x87ceeb });
+// const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+// floor.rotation.x = -Math.PI / 2;
+// scene.add(floor);
 
 // 지형 추가
 const hillMaterial = new THREE.MeshStandardMaterial({ color: 0x654321 });
@@ -38,11 +48,27 @@ hill2.position.set(10, 1.5, 5);
 scene.add(hill2);
 
 // 캐릭터 생성
-const characterGeometry = new THREE.BoxGeometry(1, 0.5, 0.3);
-const characterMaterial = new THREE.MeshStandardMaterial({ color: 0x0077ff });
-const character = new THREE.Mesh(characterGeometry, characterMaterial);
-character.position.y = 0.25; // 높이 조정
-scene.add(character);
+// const characterGeometry = new THREE.BoxGeometry(1, 0.5, 0.3);
+// const characterMaterial = new THREE.MeshStandardMaterial({ color: 0x0077ff });
+// const character = new THREE.Mesh(characterGeometry, characterMaterial);
+// character.position.y = 0.25; // 높이 조정
+// scene.add(character);
+
+const loader = new THREE.GLTFLoader();
+let character;
+loader.load(
+  './models/grumman_f4f_wildcat_airplane/scene.gltf',
+  function (gltf) {
+    character = gltf.scene;
+    character.scale.set(0.22, 0.22, 0.22);
+    character.position.y = 0.25; // 높이 조정
+    scene.add(gltf.scene);
+  },
+  undefined,
+  function (error) {
+    console.error(error);
+  }
+);
 
 // 총알 배열 및 발사 속도 변수
 const bullets = [];
@@ -96,7 +122,7 @@ let isRedBullet = true; // 총알 색상 상태
 function updateCharacter(gamepad) {
   if (!gamepad) return;
 
-  const moveSpeed = 0.1;
+  let moveSpeed = 0.1;
   const rotationSpeed = 0.05;
   const now = performance.now();
 
@@ -109,6 +135,11 @@ function updateCharacter(gamepad) {
   const right = new THREE.Vector3()
     .crossVectors(forward, new THREE.Vector3(0, 1, 0))
     .negate();
+
+  // X 버튼으로 단발 사격
+  if (gamepad.buttons[10].pressed) {
+    moveSpeed = 1; // 빠른 속도
+  }
 
   // 조이스틱 입력에 따라 캐릭터 이동
   character.position.add(forward.multiplyScalar(gamepad.axes[1] * moveSpeed)); // 앞뒤 이동
@@ -168,7 +199,7 @@ function shootBullet(color) {
   const bulletMaterial = new THREE.MeshBasicMaterial({ color: color });
   const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
 
-  bullet.position.copy(character.position); // 캐릭터 위치에서 총알 생성
+  bullet.position.copy({ ...character.position, y: 1 }); // 캐릭터 위치에서 총알 생성
   bullet.rotation.copy(character.rotation);
   scene.add(bullet);
 
@@ -224,9 +255,9 @@ function updateButtonStatus(gamepad) {
 // 애니메이션 및 게임패드 상태 업데이트
 function animate() {
   const gamepads = navigator.getGamepads();
-  if (gamepads[0]) {
-    updateCharacter(gamepads[0]);
-    updateButtonStatus(gamepads[0]); // UI 상태 업데이트
+  if (gamepads[1]) {
+    updateCharacter(gamepads[1]);
+    updateButtonStatus(gamepads[1]); // UI 상태 업데이트
   }
 
   // 총알 이동
@@ -243,7 +274,9 @@ function animate() {
     }
   });
 
-  updateCamera(); // 카메라 업데이트
+  if (character) {
+    updateCamera(); // 카메라 업데이트
+  }
 
   renderer.render(scene, camera);
 

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Grumman F4F Wildcat Airplane
+* source:	https://sketchfab.com/3d-models/grumman-f4f-wildcat-airplane-ac26b8bf6be44ba7b903ca7fbdedf7e4
+* author:	Kohl 3D (https://sketchfab.com/rojatsu)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Grumman F4F Wildcat Airplane" (https://sketchfab.com/3d-models/grumman-f4f-wildcat-airplane-ac26b8bf6be44ba7b903ca7fbdedf7e4) by Kohl 3D (https://sketchfab.com/rojatsu) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
